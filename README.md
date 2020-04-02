@@ -1,25 +1,25 @@
 ﻿# pbs_pro_exercise
 vm으로 cluster 구성 후 pbspro 설치 및 test하기
 ------------------------------------------------------------------------------------------------------------------------------------
--os: centos6.4
+      -os: centos6.4
 
--pbspro 버전: pbspro-18.1.4
+      -pbspro 버전: pbspro-18.1.4
 
--구성 #1: pbs-host 서버 1대, 계산 노드 2대
+      -구성 #1: pbs-host 서버 1대, 계산 노드 2대
 
--구성 #2: pbs-host 서버 2대, 계산 노드 1대 (failover 구성)
+      -구성 #2: pbs-host 서버 2대, 계산 노드 1대 (failover 구성)
 
 
 centos 서버 구축 및 ssh 접속 설정
 ------------------------------------------------------------------------------------------------------------------------------------
-1. vagrant 사용해서 vm 3대 구성
-   - vagrant up
-   - vagrant ssh pbs-host                 //pbs-host에 접속
+      1. vagrant 사용해서 vm 3대 구성
+         - vagrant up
+         - vagrant ssh pbs-host                 //pbs-host에 접속
 
 
-2. ssh를 이용하여 pbs-host에서 password없이 pbs-mom-1과 pbs-mom-2에 접속가능하게 함
-   - ssh-keygen
-   - ssh-copy-id 172.28.128.11 하거나 vi /etc/hosts에 172.28.128.11 pbs-mom-1을 추가한 뒤 ssh-copy-id pbs-mom-1 실행
+      2. ssh를 이용하여 pbs-host에서 password없이 pbs-mom-1과 pbs-mom-2에 접속가능하게 함
+         - ssh-keygen
+         - ssh-copy-id 172.28.128.11 하거나 vi /etc/hosts에 172.28.128.11 pbs-mom-1을 추가한 뒤 ssh-copy-id pbs-mom-1 실행
    
    
    
