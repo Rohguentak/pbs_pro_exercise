@@ -103,21 +103,13 @@ pbs-host
 #sudo vi /etc/pbs.conf
 
       PBS_SERVER=pbs-host 
-
       PBS_START_SERVER=1        
-
       PBS_START_SCHED=1
-
       PBS_START_COMM=1
-
       PBS_START_MOM=0              // MOM은 계산노드에서 돌아가므로 0으로 설정
-
       PBS_EXEC=/opt/pbs  
-
       PBS_HOME=/var/spool/pbs
-
       PBS_CORE_LIMIT=unlimited
-
       PBS_SCP=/usr/bin/scp
    
    
