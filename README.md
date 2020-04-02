@@ -54,7 +54,7 @@ pbs-host
 
 #yum install -y gcc make rpm-build libtool hwloc-devel libX11-devel libXt-devel libedit-devel libical-devel ncurses-devel perl postgresql-devel python-devel tcl-devel  tk-devel swig expat-devel openssl-devel libXext libXft wget postgresql-server
 
-#wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz /home/vagrant에 설치
+#wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz      // /home/vagrant에 설치
 
 #tar -xpvf pbspro-18.1.4.tar.gz
 #cd pbspro-18.1.4
@@ -128,19 +128,19 @@ pbs-host             0     0     0     0     0     0     0     0 Active
 #qmgr
 Max open servers: 49
 Qmgr:p s                   //서버와 queue 설정
-#
-# Create queues and set their attributes.
-#
-#
-# Create and define queue workq
-#
+
+#Create queues and set their attributes.
+
+
+#Create and define queue workq
+
 create queue workq
 set queue workq queue_type = Execution
 set queue workq enabled = True
 set queue workq started = True
-#
-# Set server attributes.
-#
+
+#Set server attributes.
+
 set server scheduling = True
 set server default_queue = workq
 set server log_events = 511
