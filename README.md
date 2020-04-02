@@ -10,8 +10,8 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
       -구성 #2: pbs-host 서버 2대, 계산 노드 1대 (failover 구성)
 
 
-      centos 서버 구축 및 ssh 접속 설정
-      ------------------------------------------------------------------------------------------------------------------------------------
+   centos 서버 구축 및 ssh 접속 설정
+   ------------------------------------------------------------------------------------------------------------------------------------
        1. vagrant 사용해서 vm 3대 구성
          - vagrant up
          - vagrant ssh pbs-host                 //pbs-host에 접속
@@ -25,104 +25,93 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
    
    
    
-nfs로 home directory 공유
-------------------------------------------------------------------------------------------------------------------------------------
-구성 #1: pbs-host 서버1대, 계산 노드 2대
+   nfs로 home directory 공유
+   ------------------------------------------------------------------------------------------------------------------------------------
+            구성 #1: pbs-host 서버1대, 계산 노드 2대
 
 
 
-nfs-server 
-----------
-#yum install -y vim rpcbind nfs-utils nfs-utils-lib
+   nfs-server 
+   ----------
+      #yum install -y vim rpcbind nfs-utils nfs-utils-lib
 
+      #chkconfig --level 35 nfs on
+      #chkconfig --level 35 nfslock on
+      #chkconfig --level 35 rpcbind on      //서버가 다시시작되었을 때 자동으로 실행되게 설정
 
-#chkconfig --level 35 nfs on
+      #sudo service rpcbind start
+      #sudo service nfslock start
+      #sudo service nfs start 
 
-#chkconfig --level 35 nfslock on
+      #rpcinfo -p localhost                  //실행되는지 확인
 
-#chkconfig --level 35 rpcbind on      //서버가 다시시작되었을 때 자동으로 실행되게 설정
+      #vi /etc/exports
+      /home/vagrant 172.28.128.11(rw,no_root_squash,sync)    //nfs-client주소 추가
+      #sudo service nfs restart
 
-
-#sudo service rpcbind start
-
-#sudo service nfslock start
-
-#sudo service nfs start 
-
-
-#rpcinfo -p localhost                  //실행되는지 확인
-
-
-#vi /etc/exports
-
-/home/vagrant 172.28.128.11(rw,no_root_squash,sync)    //nfs-client주소 추가
-
-#sudo service nfs restart
-
-
-#ssh pbs-mom-1               //nfs-client에 ssh로 접속
+      #ssh pbs-mom-1               //nfs-client에 ssh로 접속
 
 
 
 
-nfs-client
-----------
-#yum install -y nfs-utils nfs-utils-lib nfs-utils-lib-devel nfs4-acl-tools libgssglue-devel 
+   nfs-client
+   ----------
+      #yum install -y nfs-utils nfs-utils-lib nfs-utils-lib-devel nfs4-acl-tools libgssglue-devel 
 
-#mount -t nfs 172.28.128.10:/home/vagrant /home/vagrant 
-
-
+      #mount -t nfs 172.28.128.10:/home/vagrant /home/vagrant 
 
 
-pbspro 설치
-------------------------------------------------------------------------------------------------------------------------------------
-pbs-host
---------
-
-#yum install -y gcc make rpm-build libtool hwloc-devel libX11-devel libXt-devel libedit-devel libical-devel ncurses-devel perl postgresql-devel python-devel tcl-devel  tk-devel swig expat-devel openssl-devel libXext libXft wget postgresql-server
 
 
-#wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz      // /home/vagrant에 설치
+   pbspro 설치
+   ------------------------------------------------------------------------------------------------------------------------------------
+   pbs-host
+   --------
 
-#tar -xpvf pbspro-18.1.4.tar.gz
-
-#cd pbspro-18.1.4
-
-
-#./autogen.sh      //configure script와 Makefile들 생성
-
-#./configure       //설치 환경 설정 ex)--prefix= 로 pbs_exec의 위치, --with-pbs-server-home= 으로 pbs_home의 위치 설정 가능
-
-#make
-
-#sudo make install // pbs컴파일 및 설치
+      #yum install -y gcc make rpm-build libtool hwloc-devel libX11-devel libXt-devel libedit-devel libical-devel ncurses-devel perl            postgresql-devel python-devel tcl-devel  tk-devel swig expat-devel openssl-devel libXext libXft wget postgresql-server
 
 
-#sudo /opt/pbs/libexec/pbs_postinstall //config 설정을 위해 post install 실행
+      #wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz      // /home/vagrant에 설치
 
-#sudo vi /etc/pbs.conf
+      #tar -xpvf pbspro-18.1.4.tar.gz
 
-      PBS_SERVER=pbs-host 
-      PBS_START_SERVER=1        
-      PBS_START_SCHED=1
-      PBS_START_COMM=1
-      PBS_START_MOM=0              // MOM은 계산노드에서 돌아가므로 0으로 설정
-      PBS_EXEC=/opt/pbs  
-      PBS_HOME=/var/spool/pbs
-      PBS_CORE_LIMIT=unlimited
-      PBS_SCP=/usr/bin/scp
+      #cd pbspro-18.1.4
+
+
+      #./autogen.sh      //configure script와 Makefile들 생성
+
+      #./configure       //설치 환경 설정 ex)--prefix= 로 pbs_exec의 위치, --with-pbs-server-home= 으로 pbs_home의 위치 설정 가능
+
+      #make
+
+      #sudo make install // pbs컴파일 및 설치
+
+
+      #sudo /opt/pbs/libexec/pbs_postinstall //config 설정을 위해 post install 실행
+
+      #sudo vi /etc/pbs.conf
+
+            PBS_SERVER=pbs-host 
+            PBS_START_SERVER=1        
+            PBS_START_SCHED=1
+            PBS_START_COMM=1
+            PBS_START_MOM=0              // MOM은 계산노드에서 돌아가므로 0으로 설정
+            PBS_EXEC=/opt/pbs  
+            PBS_HOME=/var/spool/pbs
+            PBS_CORE_LIMIT=unlimited
+            PBS_SCP=/usr/bin/scp
    
    
 
-#sudo chmod 4755 /opt/pbs/sbin/pbs_iff /opt/pbs/sbin/pbs_rcp //일반 유저도 pbs접근 가능하도록 설정
+      #sudo chmod 4755 /opt/pbs/sbin/pbs_iff /opt/pbs/sbin/pbs_rcp //일반 유저도 pbs접근 가능하도록 설정
 
-#sudo /etc/init.d/pbs start   //pbs 시작
+      #sudo /etc/init.d/pbs start   //pbs 시작
 
-#sudo /etc/init.d/pbs status
+      #sudo /etc/init.d/pbs status
       
-      pbs_server is pid 32098
-      pbs_sched is pid 31863
-      pbs_comm is 31857
+            pbs_server is pid 32098
+            pbs_sched is pid 31863
+            pbs_comm is 31857
 
 
 
