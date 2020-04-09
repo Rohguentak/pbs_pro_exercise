@@ -56,12 +56,24 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
    nfs-client
    ----------
       #yum install -y nfs-utils nfs-utils-lib nfs-utils-lib-devel nfs4-acl-tools libgssglue-devel 
+      #mkdir /data
+      #mount -t nfs 172.28.128.10:/home/vagrant /home/vagrant       //pbs설치시 공통된 작업을 수행하기위한 
+      #mount -t nfs 172.28.128.10:/data /data                     //failover구성을 위해 PBS_HOME을 위한 디렉토리
 
-      #mount -t nfs 172.28.128.10:/home/vagrant /home/vagrant 
 
-
-
-
+   pbs설치 사전작업
+   ----------------
+            nfs-server에서 수행
+            #git clone https://github.com/Rohguentak/pbs_pro_exercise
+            http request fail의 경우 git 버전업그레이드
+            #rpm -Uvh http://opensource.wandisco.com/centos/6/git/x86_64/wandisco-git-release-6-1.noarch.rpm            //저장소 새로 지정
+            #yum install -y git
+            ssl connect 에러가 뜰 경우 패키지 업그레이드      //http 관련 git error는 centos 6.x 오륟턋
+            #yum update -y nss curl libcurl
+            #git clone https://github.com/Rohguentak/pbs_pro_exercise
+            #wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz
+            #cd pbs_pro_exercise
+            #cp script.sh ~/
    pbspro 설치(구성 #1: pbs-host 서버1대, 계산 노드 2대, nfs 서버 1대)
    ------------------------------------------------------------------------------------------------------------------------------------
    pbs-host
@@ -220,15 +232,72 @@ test
 
    pbspro 설치(구성 #2: pbs-host 서버 2대, 계산 노드 1대, nfs 서버 1대)
    ------------------------------------------------------------------------------------------------------------------------------------
-   pbs-host
-   --------
-            #git clone https://github.com/Rohguentak/pbs_pro_exercise
-            http request fail의 경우 git 버전업그레이드
-            #rpm -Uvh http://opensource.wandisco.com/centos/6/git/x86_64/wandisco-git-release-6-1.noarch.rpm            //저장소 새로 지정
-            #yum install -y git
-            ssl connect 에러가 뜰 경우 패키지 업그레이드
-            #yum update -y nss curl libcurl
-            #git clone https://github.com/Rohguentak/pbs_pro_exercise
-            #cd pbs_pro_exercise
+   pbs-host1
+   ---------
             #sudo ./script.sh
+            #su
+            #rpm -Uvh /root/rpmbuild/RPMS/x86_64/pbspro-server-18.1.4-0.x86_64.rpm --nodeps
+            #vi /etc/hosts
+            172.28.128.20     pbs-host1   pbs-host1
+            172.28.128.21     pbs-host2   pbs-host2
+            172.28.128.22     pbs-mom     pbs-mom
+            #vi /etc/pbs.conf
+            PBS_EXEC=/opt/pbs
+            PBS_SERVER=pbs-host1
+            PBS_PRIMARY=pbs-host1
+            PBS_SECONDARY=pbs-host2
+            PBS_START_SERVER=1
+            PBS_START_SCHED=1
+            PBS_START_COMM=1
+            PBS_START_MOM=0
+            PBS_HOME=/data/pbs
+            PBS_CORE_LIMIT=unlimited
+            PBS_SCP=/usr/bin/scp
+            #service pbs start
+                        
+   pbs-host2
+   ---------
+            #sudo ./script.sh
+            #su
+            #rpm -Uvh /root/rpmbuild/RPMS/x86_64/pbspro-server-18.1.4-0.x86_64.rpm --nodeps
+            #vi /etc/hosts
+            172.28.128.20     pbs-host1   pbs-host1
+            172.28.128.21     pbs-host2   pbs-host2
+            172.28.128.22     pbs-mom     pbs-mom
+            #vi /etc/pbs.conf
+            PBS_EXEC=/opt/pbs
+            PBS_SERVER=pbs-host1
+            PBS_PRIMARY=pbs-host1
+            PBS_SECONDARY=pbs-host2
+            PBS_START_SERVER=1
+            PBS_START_SCHED=0                   //scheduler 실행 x
+            PBS_START_COMM=1
+            PBS_START_MOM=0
+            PBS_HOME=/data/pbs
+            PBS_CORE_LIMIT=unlimited
+            PBS_SCP=/usr/bin/scp
+            #service pbs start
             
+   pbs-mom
+   -------
+            #sudo ./script.sh
+            #su
+            #rpm -Uvh /root/rpmbuild/RPMS/x86_64/pbspro-execution-18.1.4-0.x86_64.rpm --nodeps
+            #vi /etc/hosts
+            172.28.128.20     pbs-host1   pbs-host1
+            172.28.128.21     pbs-host2   pbs-host2
+            172.28.128.22     pbs-mom     pbs-mom
+            #vi /etc/pbs.conf
+            PBS_EXEC=/opt/pbs
+            PBS_SERVER=pbs-host1
+            PBS_PRIMARY=pbs-host1
+            PBS_SECONDARY=pbs-host2
+            PBS_START_SERVER=0
+            PBS_START_SCHED=0                   
+            PBS_START_COMM=0
+            PBS_START_MOM=1                           //mom만 실행
+            PBS_HOME=/data/pbs
+            PBS_CORE_LIMIT=unlimited
+            PBS_SCP=/usr/bin/scp
+            #service pbs start
+   
