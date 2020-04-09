@@ -14,12 +14,12 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
    ------------------------------------------------------------------------------------------------------------------------------------
        1. vagrant 사용해서 vm 3대 구성
          - vagrant up
-         - vagrant ssh pbs-host                       //pbs-host에 접속
+         - vagrant ssh pbs-nfs                       //pbs-host에 접속
 
 
-      2. ssh를 이용하여 pbs-host에서 password없이 pbs-mom-1과 pbs-mom-2에 접속가능하게 함
+      2. ssh를 이용하여 pbs-nfs에서 password없이 pbs components에 접속가능하게 함
          - ssh-keygen
-         - ssh-copy-id 172.28.128.11 하거나 vi /etc/hosts에 172.28.128.11 pbs-mom-1을 추가한 뒤 ssh-copy-id pbs-mom-1 실행
+         - ssh-copy-id 172.28.128.11 하거나 vi /etc/hosts에 172.28.128.11 pbs-host를 추가한 뒤 ssh-copy-id pbs-host 실행
    
    
    
@@ -49,7 +49,7 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
       /home/vagrant 172.28.128.11(rw,no_root_squash,sync)    //nfs-client주소 추가
       #sudo service nfs restart
 
-      #ssh pbs-mom-1                                         //nfs-client에 ssh로 접속
+      #ssh pbs-host                                         //nfs-client에 ssh로 접속
 
 
 
