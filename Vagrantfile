@@ -1,5 +1,13 @@
 Vagrant.configure("2") do |config|
  config.vm.box = "spencercooley/centos6.4"
+ config.vm.define "pbs_nfs" do |nf|
+     nf.vm.provider "virtualbox" do |vb|
+        vb.name = "pbs_nfs"
+     end
+     nf.vm.host_name="pbs-nfs"
+     nf.vm.network "private_network", ip:"172.28.128.13"
+ end 
+ 
  config.vm.define "pbs_host" do |sc|
      sc.vm.provider "virtualbox" do |vb|
         vb.name = "pbs_host"
