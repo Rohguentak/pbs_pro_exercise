@@ -5,14 +5,14 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
 
       -pbspro 버전: pbspro-18.1.4
 
-      -구성 #1: pbs-host 서버 1대, 계산 노드 2대
+      -구성 #1: pbs-host 서버 1대, 계산 노드 2대 , nfs 서버 1대
 
-      -구성 #2: pbs-host 서버 2대, 계산 노드 1대 (failover 구성)
+      -구성 #2: pbs-host 서버 2대, 계산 노드 1대 , nfs 서버 1대 (failover 구성)
 
 
    centos 서버 구축 및 ssh 접속 설정
    ------------------------------------------------------------------------------------------------------------------------------------
-       1. vagrant 사용해서 vm 3대 구성
+       1. vagrant 사용해서 vm 4대 구성
          - vagrant up
          - vagrant ssh pbs-nfs                       //pbs-host에 접속
 
@@ -27,7 +27,6 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
    
    nfs로 home directory 공유
    ------------------------------------------------------------------------------------------------------------------------------------
-            구성 #1: pbs-host 서버1대, 계산 노드 2대
 
 
 
@@ -63,7 +62,7 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
 
 
 
-   pbspro 설치
+   pbspro 설치(구성 #1: pbs-host 서버1대, 계산 노드 2대, nfs 서버 1대)
    ------------------------------------------------------------------------------------------------------------------------------------
    pbs-host
    --------
@@ -217,3 +216,19 @@ test
 
             vagrant  18707 18706  0 07:06 ?        00:00:00 sleep 200               //host에서 제출한 job이 
             vagrant  18734 18712  0 07:10 pts/0    00:00:00 grep sleep              //스케줄링 됨
+
+
+   pbspro 설치(구성 #2: pbs-host 서버 2대, 계산 노드 1대, nfs 서버 1대)
+   ------------------------------------------------------------------------------------------------------------------------------------
+   pbs-host
+   --------
+            #git clone https://github.com/Rohguentak/pbs_pro_exercise
+            http request fail의 경우 git 버전업그레이드
+            #rpm -Uvh http://opensource.wandisco.com/centos/6/git/x86_64/wandisco-git-release-6-1.noarch.rpm            //저장소 새로 지정
+            #yum install -y git
+            ssl connect 에러가 뜰 경우 패키지 업그레이드
+            #yum update -y nss curl libcurl
+            #git clone https://github.com/Rohguentak/pbs_pro_exercise
+            #cd pbs_pro_exercise
+            #sudo ./script.sh
+            
