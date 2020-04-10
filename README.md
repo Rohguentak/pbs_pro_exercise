@@ -234,8 +234,15 @@ test
    ------------------------------------------------------------------------------------------------------------------------------------
    pbs-host1
    ---------
-            #sudo ./script.sh
-            #su
+            #yum install -y gcc make rpm-build libtool hwloc-devel libX11-devel libXt-devel libedit-devel libical-devel ncurses-devel perl postgresql-devel python-devel tcl-devel  tk-devel swig expat-devel openssl-devel libXext libXft wget postgresql-server rpmdevtools
+            #rpmdev-setuptree
+            #wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz           // /home/vagrant에 설치
+            #tar -xpvf pbspro-18.1.4.tar.gz
+            #cd pbspro-18.1.4
+
+            #./autogen.sh                       //configure script와 Makefile들 생성
+            #./configure                        //설치 환경 설정 ex)--prefix= 로 pbs_exec의 위치, --with-pbs-server-home= 으로 pbs_home의  위치 설정 가능
+            #make
             #rpm -Uvh /root/rpmbuild/RPMS/x86_64/pbspro-server-18.1.4-0.x86_64.rpm --nodeps
             #vi /etc/hosts
             172.28.128.20     pbs-host1   pbs-host1
@@ -258,8 +265,6 @@ test
                         
    pbs-host2
    ---------
-            #sudo ./script.sh
-            #su
             #rpm -Uvh /root/rpmbuild/RPMS/x86_64/pbspro-server-18.1.4-0.x86_64.rpm --nodeps
             #vi /etc/hosts
             172.28.128.20     pbs-host1   pbs-host1
@@ -282,8 +287,6 @@ test
             
    pbs-mom
    -------
-            #sudo ./script.sh
-            #su
             #rpm -Uvh /root/rpmbuild/RPMS/x86_64/pbspro-execution-18.1.4-0.x86_64.rpm --nodeps
             #vi /etc/hosts
             172.28.128.20     pbs-host1   pbs-host1
