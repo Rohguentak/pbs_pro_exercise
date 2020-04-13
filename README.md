@@ -236,6 +236,8 @@ test
    ---------
             #yum install -y gcc make rpm-build libtool hwloc-devel libX11-devel libXt-devel libedit-devel libical-devel ncurses-devel perl postgresql-devel python-devel tcl-devel  tk-devel swig expat-devel openssl-devel libXext libXft wget postgresql-server rpmdevtools
             #rpmdev-setuptree
+            #wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz
+            #tar -xpvf pbspro-18.1.4.tar.gz
             #cd pbspro-18.1.4
 
             #./autogen.sh                       //configure script와 Makefile들 생성
