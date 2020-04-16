@@ -57,7 +57,7 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
       #mount -t nfs 172.28.128.10:/data /data                     //failover구성을 위해 PBS_HOME을 위한 디렉토리
 
 
-게ㅡ   pbs설치 사전작업(failover구성)
+   pbs설치 사전작업(failover구성)
    ----------------
             nfs-server에서 수행
             #yum install -y postgresql-devel postgresql-server          //nfs서버에 postgresql의 default 유저인 postgres를 생성하기 위함
