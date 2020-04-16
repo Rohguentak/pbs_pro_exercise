@@ -55,15 +55,15 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
       #yum install -y nfs-utils nfs-utils-lib nfs-utils-lib-devel nfs4-acl-tools libgssglue-devel 
       #mkdir /data
       #mount -t nfs 172.28.128.10:/data /data                     //failover구성을 위해 PBS_HOME을 위한 디렉토리
+      #mount -t nfs 172.28.128.10:/home/vagrant /home/vagrant     //공통파일 설치를 위한 마운트
 
 
-   pbs설치 사전작업(failover구성)
+   pbs설치 사전작업(failover구성시)
    ----------------
             nfs-server에서 수행
-            #yum install -y postgresql-devel postgresql-server          //nfs서버에 postgresql의 default 유저인 postgres를 생성하기 위함
+            #yum install -y postgresql-server          //nfs서버에 postgresql의 default 유저인 postgres를 생성하기 위함
             #wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz
-            #cd pbs_pro_exercise
-            #cp script.sh ~/
+         
    pbspro 설치(구성 #1: pbs-host 서버1대, 계산 노드 2대, nfs 서버 1대)
    ------------------------------------------------------------------------------------------------------------------------------------
    pbs-host
