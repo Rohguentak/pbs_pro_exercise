@@ -46,10 +46,7 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
 
       #vi /etc/exports
       /home/vagrant 172.28.128.11(rw,no_root_squash,sync)    //nfs-client주소 추가
-      #sudo service nfs restart
-
-      #ssh pbs-host                                         //nfs-client에 ssh로 접속
-
+      #sudo service nfs restar
 
 
 
@@ -57,20 +54,13 @@ vm으로 cluster 구성 후 pbspro 설치 및 test하기
    ----------
       #yum install -y nfs-utils nfs-utils-lib nfs-utils-lib-devel nfs4-acl-tools libgssglue-devel 
       #mkdir /data
-      #mount -t nfs 172.28.128.10:/home/vagrant /home/vagrant       //pbs설치시 공통된 작업을 수행하기위한 
       #mount -t nfs 172.28.128.10:/data /data                     //failover구성을 위해 PBS_HOME을 위한 디렉토리
 
 
-   pbs설치 사전작업
+게ㅡ   pbs설치 사전작업(failover구성)
    ----------------
             nfs-server에서 수행
-            #git clone https://github.com/Rohguentak/pbs_pro_exercise
-            http request fail의 경우 git 버전업그레이드
-            #rpm -Uvh http://opensource.wandisco.com/centos/6/git/x86_64/wandisco-git-release-6-1.noarch.rpm            //저장소 새로 지정
-            #yum install -y git
-            ssl connect 에러가 뜰 경우 패키지 업그레이드      //http 관련 git error는 centos 6.x 오륟턋
-            #yum update -y nss curl libcurl
-            #git clone https://github.com/Rohguentak/pbs_pro_exercise
+            #yum install -y postgresql-devel postgresql-server          //nfs서버에 postgresql의 default 유저인 postgres를 생성하기 위함
             #wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz
             #cd pbs_pro_exercise
             #cp script.sh ~/
@@ -238,12 +228,16 @@ test
             #rpmdev-setuptree
             #wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz
             #tar -xpvf pbspro-18.1.4.tar.gz
+            #mv pbspor-18.1.4.tar.gz ~/rpmbuild/SOURCES
             #cd pbspro-18.1.4
 
             #./autogen.sh                       //configure script와 Makefile들 생성
             #./configure                        //설치 환경 설정 ex)--prefix= 로 pbs_exec의 위치, --with-pbs-server-home= 으로 pbs_home의  위치 설정 가능
             #make
-            #rpm -Uvh /root/rpmbuild/RPMS/x86_64/pbspro-server-18.1.4-0.x86_64.rpm --nodeps
+            #cp pbspro.spec ~/rpmbuild/SPECS
+            #cd ~/rpmbuild/SPECS
+            #rpmbuild -ba pbspro.spec
+            #rpm -Uvh ~/rpmbuild/RPMS/x86_64/pbspro-server-18.1.4-0.x86_64.rpm --nodeps
             #vi /etc/hosts
             172.28.128.20     pbs-host1   pbs-host1
             172.28.128.21     pbs-host2   pbs-host2
@@ -265,6 +259,19 @@ test
                         
    pbs-host2
    ---------
+            #yum install -y gcc make rpm-build libtool hwloc-devel libX11-devel libXt-devel libedit-devel libical-devel ncurses-devel perl postgresql-devel python-devel tcl-devel  tk-devel swig expat-devel openssl-devel libXext libXft wget postgresql-server rpmdevtools
+            #rpmdev-setuptree
+            #wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz
+            #tar -xpvf pbspro-18.1.4.tar.gz
+            #mv pbspor-18.1.4.tar.gz ~/rpmbuild/SOURCES
+            #cd pbspro-18.1.4
+
+            #./autogen.sh                       //configure script와 Makefile들 생성
+            #./configure                        //설치 환경 설정 ex)--prefix= 로 pbs_exec의 위치, --with-pbs-server-home= 으로 pbs_home의  위치 설정 가능
+            #make
+            #cp pbspro.spec ~/rpmbuild/SPECS
+            #cd ~/rpmbuild/SPECS
+            #rpmbuild -ba pbspro.spec
             #rpm -Uvh /root/rpmbuild/RPMS/x86_64/pbspro-server-18.1.4-0.x86_64.rpm --nodeps
             #vi /etc/hosts
             172.28.128.20     pbs-host1   pbs-host1
@@ -287,6 +294,19 @@ test
             
    pbs-mom
    -------
+            #yum install -y gcc make rpm-build libtool hwloc-devel libX11-devel libXt-devel libedit-devel libical-devel ncurses-devel perl postgresql-devel python-devel tcl-devel  tk-devel swig expat-devel openssl-devel libXext libXft wget rpmdevtools
+            #rpmdev-setuptree
+            #wget https://github.com/PBSPro/pbspro/releases/download/v18.1.4/pbspro-18.1.4.tar.gz
+            #tar -xpvf pbspro-18.1.4.tar.gz
+            #mv pbspor-18.1.4.tar.gz ~/rpmbuild/SOURCES
+            #cd pbspro-18.1.4
+
+            #./autogen.sh                       //configure script와 Makefile들 생성
+            #./configure                        //설치 환경 설정 ex)--prefix= 로 pbs_exec의 위치, --with-pbs-server-home= 으로 pbs_home의  위치 설정 가능
+            #make
+            #cp pbspro.spec ~/rpmbuild/SPECS
+            #cd ~/rpmbuild/SPECS
+            #rpmbuild -ba pbspro.spec
             #rpm -Uvh /root/rpmbuild/RPMS/x86_64/pbspro-execution-18.1.4-0.x86_64.rpm --nodeps
             #vi /etc/hosts
             172.28.128.20     pbs-host1   pbs-host1
@@ -350,7 +370,38 @@ test
             set server eligible_time_enable = False
             set server max_concurrent_provision = 5
             
+            #echo "sleep 200" | qsub                               //root계정에서 job제출하면 안됨
+            11.pbs-host                                      //job id
+            #qstat -a
+            pbs-host:
+                                                                        Req'd  Req'd   Elap
+            Job ID          Username Queue    Jobname    SessID NDS TSK Memory Time  S Time
+            --------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
+            11.pbs-host     vagrant  workq    STDIN       18685   1   1    --    --  R 00:00
+
+            #ssh pbs-mom-1
+            #ps -ef | grep sleep
+
+            vagrant  18707 18706  0 07:06 ?        00:00:00 sleep 200               //host에서 제출한 job이 
+            vagrant  18734 18712  0 07:10 pts/0    00:00:00 grep sleep              //스케줄링 됨
+            #sudo /etc/init.d/pbs stop                //pbs-host1 stop
             
+            #ps -ef | grep pbs            //pbs-host2에서 실행
+            #root      2474     1  0 05:37 ?        00:00:00 /sbin/dhclient -H pbs-host2 -1 -q -cf /etc/dhcp/dhclient-eth0.conf -lf /var/lib/dhclient/dhclient-eth0.leases -pf /var/run/dhclient-eth0.pid eth0
+            #root      9320     1  0 06:45 ?        00:00:00 /opt/pbs/sbin/pbs_comm
+            #root      9337     1  0 06:45 ?        00:00:00 /opt/pbs/sbin/pbs_server.bin
+            
+            #ps -ef | grep pbs
+            #root      2474     1  0 05:37 ?        00:00:00 /sbin/dhclient -H pbs-host2 -1 -q -cf /etc/dhcp/dhclient-eth0.conf -lf /var/lib/dhclient/dhclient-eth0.leases -pf /var/run/dhclient-eth0.pid eth0
+            #root      9320     1  0 06:45 ?        00:00:00 /opt/pbs/sbin/pbs_comm
+            #root      9337     1  0 06:45 ?        00:00:00 /opt/pbs/sbin/pbs_server.bin
+            #root      9528     1  0 07:01 ?        00:00:00 /opt/pbs/sbin/pbs_ds_monitor monitor
+            #postgres  9556     1  0 07:01 ?        00:00:00 /usr/bin/postgres -D /data/pbs/datastore -p 15007          //일정시간이후 pbs-host1의 db가 pbs-host2로 넘어온것을 확인
+            #postgres  9724  9556  0 07:01 ?        00:00:00 postgres: postgres pbs_datastore 127.0.0.1(49662) idle
+            #root      9730     1  0 07:01 ?        00:00:00 /opt/pbs/sbin/pbs_sched
+            
+            
+
             
     
    
