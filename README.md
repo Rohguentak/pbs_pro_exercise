@@ -379,7 +379,7 @@ test
             --------------- -------- -------- ---------- ------ --- --- ------ ----- - -----
             11.pbs-host     vagrant  workq    STDIN       18685   1   1    --    --  R 00:00
 
-            #ssh pbs-mom-1
+            #ssh pbs-mom
             #ps -ef | grep sleep
 
             vagrant  18707 18706  0 07:06 ?        00:00:00 sleep 200               //host에서 제출한 job이 
