@@ -403,5 +403,9 @@ test
             
 
             
-    
+```
+# pbs mom에서 리소스 부족으로 seg fault 발생시 해당파일의 끝에 ulimit -s unlimits 추가
+/usr/pbs/lib/init.d/limits.pbs_mom
+
+```
    
